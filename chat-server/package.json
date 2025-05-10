@@ -1,0 +1,35 @@
+{
+  "name": "chat-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+
+    "bcrypt_comment": "// 'bcrypt' to hash the password for more secure",
+    "bcrypt": "^5.1.1",
+
+    "cors_comment": "// 'cors' to connect to frountend",
+    "cors": "^2.8.5", 
+
+    "dotenv_comment": "// 'dotenv' work with dotenv file, create environment variable to store data information there to secure these data",
+    "dotenv": "^16.4.5",
+
+    "express": "^4.19.2",
+
+    "jsonwebtoken_comment": "// 'jsonwebtoken' to ....",
+    "jsonwebtoken": "^9.0.2",
+    
+    "mongoose": "^8.4.1",
+    "socket.io": "^4.7.5",
+
+    "validator_comment": "// 'validator' to valid email, make sure password are if it storng",
+    "validator": "^13.12.0"
+  }
+}

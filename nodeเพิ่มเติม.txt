@@ -1,0 +1,61 @@
+
+{
+    "name": "chaoo",
+    "email": "chaoo@gmail.com",
+    "password": "#Pass1234"
+}
+
+{
+    "_id": "6720f0399bea177bf51019b5",
+    "name": "chaoo",
+    "email": "chaoo@gmail.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzIwZjAzOTliZWExNzdiZjUxMDE5YjUiLCJpYXQiOjE3MzAyMTM1NDAsImV4cCI6MTczMDQ3Mjc0MH0.Qx0x8HXDFYBZ9mi5VVd2_7LPfNI14P3KkjL-O1d6-Ms"
+}
+
+
+***ช่วงที่codeขาดตกไป***
+Real-time Chat App - 1 Authentication APIs in Node.js | React, Node.js and Socket.io
+เวลา 20:00
+
+#############
+
+{
+    "name": "Suphada",
+    "email": "ink@gmail.com",
+    "password": "#Pass1234"
+}
+
+{
+    "name": "",
+    "email": "",
+    "password": ""
+}
+
+#############
+
+{
+    "name": "janny",
+    "email": "janny@gmail.com",
+    "password": "#Pass1234"
+}
+
+{
+    "name": "",
+    "email": "",
+    "password": ""
+}
+
+#############
+
+{
+    "name": "Hanna",
+    "email": "hanna@gmail.com",
+    "password": "#Pass1234"
+}
+
+{
+    "name": "",
+    "email": "",
+    "password": ""
+}
+
