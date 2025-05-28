@@ -23,7 +23,7 @@ const PotentialChats = () => {
                         <span className={onlineUsers?.some((user) => user?.userId === u?._id )? "user-online":""}></span>
                     </div>
                 );
-            })};
+            })}
         </div>
     </>
     )   

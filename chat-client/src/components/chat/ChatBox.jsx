@@ -1,4 +1,4 @@
-import { useContext,useState } from "react";
+import { useContext,useState, useRef,useEffect} from "react";
 import {Stack} from "react-bootstrap";
 import { ChatContext } from "../../context/ChatContext";
 import { AuthContext } from "../../context/AuthContext";
@@ -11,12 +11,16 @@ const ChatBox = () => {
     const {currentChat, messages,isMessagesLoading,sendTextMessage} = useContext(ChatContext);
     const {recipientUser} = useFetchRecipientUser(currentChat,user);
     const [textMessage, setTextMessage] = useState("");
+    const scroll = useRef();
+        
+    //when new message appear scroll chat down to that new message
+    useEffect(()=>{
+        scroll.current?.scrollIntoView({behavior:"smooth"});
+    },[messages]);
 
-    console.log("text", textMessage);
-
-    console.log("currentChats",currentChat);
-    console.log("currentChats",user);
-    console.log("recipientUser",recipientUser);
+    if (!user) {
+        return <p style={{textAlign:"center", width:"100%"}}>Loading user...</p>;
+    }
 
     if (!recipientUser) return(
             <p style={{textAlign:"center", width: "100%"}}>
@@ -37,10 +41,16 @@ const ChatBox = () => {
 
         <Stack gap={3} className="messages">
             {messages && messages.map((message, index) => (
-                <Stack key={index} className={`${message?.senderId === user?._id ? "message self align-self-end flex-grow-0":"message align-self-start flex-grow-0"}`}> 
-                <span>{message.text}</span>
-                <span className="message-footer">{moment(message.createdAt).calendar()}</span>
-            </Stack>))}
+                <Stack 
+                    key={index} 
+                    className={`${message?.senderId === user?._id 
+                    ? "message self align-self-end flex-grow-0"
+                    : "message align-self-start flex-grow-0"}`}
+                    ref = {scroll}
+                > 
+                    <span>{message.text}</span>
+                    <span className="message-footer">{moment(message.createdAt).calendar()}</span>
+                </Stack>))}
         </Stack>
 
         <Stack direction="horizontal" gap={3} className="chat-input flex-grow-0">

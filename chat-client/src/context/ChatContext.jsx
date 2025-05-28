@@ -20,6 +20,10 @@ export const ChatContextProvider = ({children,user}) => {
     const [newMessage, setNewMessage] = useState(null);
     const [socket, setSocket] = useState(null);
     const [onlineUsers,setOnlineUsers] = useState([]);
+    const [notifications,setNotifications] = useState([]);
+    const [allUsers, setAllUsers] = useState([]); // smiler to potential chat but not filter
+    
+    console.log("notifications", notifications);
 
     // connect client to socket server
     useEffect(()=>{
@@ -41,6 +45,7 @@ export const ChatContextProvider = ({children,user}) => {
 
         socket.on("getOnlineUsers",(res)=>{ // recieved an event
             setOnlineUsers(res);
+            console.log("getOnlineUser",res);
         }); // get list of online users from socket server
     },[socket]);
     
@@ -48,22 +53,34 @@ export const ChatContextProvider = ({children,user}) => {
         if (socket === null) return;
 
         const recipientId = currentChat?.members.find((id)=>id !== user?._id); // find chat that user are currently active
-
+        
         socket.emit("sendMessage",{...newMessage,recipientId})
     },[newMessage]);
 
-    // recive message from socket
+    // recive message and notification from socket
     useEffect(()=>{
         if (socket === null) return;
 
         socket.on("getMessage", res => {
-            if(currentChat?._id !== res.chatId) return   
+            if(currentChat?._id !== res.chatId) return;
             setMessages((prev) => [...prev,res]) //res : a new message
         })
 
+        socket.on("getNotification", (res)=>{
+            // if current chat is open, do not send notification
+            const isChatOpen = currentChat?.members.some(id => id === res.senderId)
+            if(isChatOpen){
+                // if chat alredy open, set lestest notification's isRead = ture
+                setNotifications(prev => [{...res,isRead:true},...prev]);
+            }else{
+                setNotifications((prev) => [res, ...prev]);
+            };
+        });
+
         return () =>{
-            socket.off("getMessage")
-        }
+            socket.off("getMessage");
+            socket.off("getNotification");
+        };
     },[socket,currentChat]);
 
     useEffect(()=>{
@@ -99,6 +116,7 @@ export const ChatContextProvider = ({children,user}) => {
                 return !isChatCreated;
             });
             setPotentialChats(pChats);
+            setAllUsers(response);
         };
         getUsers();
     },[userChats]);
@@ -195,7 +213,9 @@ export const ChatContextProvider = ({children,user}) => {
         messagesError,
         currentChat,
         sendTextMessage,
-        onlineUsers
+        onlineUsers,
+        notifications,
+        allUsers
     }}>
         {children}
     </ChatContext.Provider>
