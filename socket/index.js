@@ -24,10 +24,18 @@ io.on("connection", (socket) => {
 
 // add message
 socket.on("sendMessage",(message)=>{
-  const user = onlineUsers.find(user => user.userId === message.respientId) // if user that chat with main user is online
+  const user = onlineUsers.find(user => user.userId === message.recipientId) // if user that chat with main user is online
 
   if(user){
-    io.to(user.socketId).emit("getMessage",message) //send message back to update in client
+    //send message to recived client
+    io.to(user.socketId).emit("getMessage",message) 
+
+    // send notification
+    io.to(user.socketId).emit("getNotification",{
+      senderId: message.senderId,
+      isRead: false,
+      date: new Date(),
+    });
   }
 });
 
