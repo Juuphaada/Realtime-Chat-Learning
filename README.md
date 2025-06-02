@@ -1,0 +1,3 @@
+The application is a real-time chat that user can send messages to other users, receive messages from them and notify if there're unread new message is received. 
+The point of this Project is for learning JavaScript, node.js and React.js for developing web application. Thank to Chaoo Charles, This project are guide by his Tutorial video. 
+furthermore, I would add more feature to make this application more comprehensive.
