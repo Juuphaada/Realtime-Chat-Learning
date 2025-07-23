@@ -1,11 +1,22 @@
-const messageModel = require("../Models/messageModel")
+const messageModel = require("../Models/messageModel");
+const cloudinary = require("../lib/cloudinary.js");
 
 // create Message
 const createMessage = async(req,res) => {
-    const {chatId,senderId,text} = req.body
+    const {chatId,senderId,text,image} = req.body;
+
+    let imageURL;
+    if(image){
+        try{
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageURL = uploadResponse.secure_url;
+        }catch(error){
+            console.log("cloudinary error",error);
+        }
+    }
 
     const message = new messageModel({
-        chatId,senderId,text
+        chatId,senderId,text,imageURL
     })
 
     try{

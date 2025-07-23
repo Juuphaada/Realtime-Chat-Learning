@@ -22,8 +22,7 @@ export const ChatContextProvider = ({children,user}) => {
     const [onlineUsers,setOnlineUsers] = useState([]);
     const [notifications,setNotifications] = useState([]);
     const [allUsers, setAllUsers] = useState([]); // smiler to potential chat but not filter
-    
-    console.log("notifications", notifications);
+    const [sendImages,setSendImage] = useState([]);
 
     // connect client to socket server
     useEffect(()=>{
@@ -45,14 +44,14 @@ export const ChatContextProvider = ({children,user}) => {
 
         socket.on("getOnlineUsers",(res)=>{ // recieved an event
             setOnlineUsers(res);
-            console.log("getOnlineUser",res);
         }); // get list of online users from socket server
     },[socket]);
     
     useEffect(()=>{
         if (socket === null) return;
 
-        const recipientId = currentChat?.members.find((id)=>id !== user?._id); // find chat that user are currently active
+        // get other user Id in chat that main user are currently active
+        const recipientId = currentChat?.members.find((id)=>id !== user?._id); 
         
         socket.emit("sendMessage",{...newMessage,recipientId})
     },[newMessage]);
@@ -155,37 +154,63 @@ export const ChatContextProvider = ({children,user}) => {
                 return setMessagesError(response);
             }
 
-            setMessages(response);
+            setMessages
+            (response);
         };
         getMessages();
     },[currentChat]);
 
     const sendTextMessage = useCallback(async(textMessage,sender,currentChatId, setTextMessage) => {
-        if(!textMessage) return console.log("You must type something...")  
+        if(!textMessage && !sendImages) return console.log("You must type something or upload some Image")  
 
-        const response = await postRequest(
-            `${baseUrl}/messages`,
-            JSON.stringify({
-            chatId: currentChatId,
-            senderId: sender._id,
-            text: textMessage
-            })
-        ); 
+        if(textMessage){
+            let response = postRequest(
+                `${baseUrl}/messages`,
+                JSON.stringify({
+                chatId: currentChatId,
+                senderId: sender._id,
+                text: textMessage,
+                })
+            )
 
-        if(response.error){
-            return setSendTextMessageError(response);
+            if(response?.error){
+                return setSendTextMessageError(response);
+            }
+
+            setNewMessage(response); 
+            setMessages((prev)=>[...prev,response]);
+            setTextMessage("");
+            
         }
 
-        setNewMessage(response); 
-        //use this new message tell socket server that we have new message and update recipient
-        setMessages((prev)=>[...prev,response]);
-        setTextMessage("");
+        if(sendImages.length !== 0){
+            for(const sendImage of sendImages.length){
+            let response = postRequest(
+                `${baseUrl}/messages`,
+                    JSON.stringify({
+                    chatId: currentChatId,
+                    senderId: sender._id,
+                    image: sendImage,
+                })
+            )
+                
+            if(response?.error){
+                return setSendTextMessageError(response);
+            }
 
+            //use this new message tell socket server that we have new message and update recipient
+            setNewMessage(response); 
+            setMessages((prev)=>[...prev,response]);
+            }
+
+            setSendImage(null);
+        }
+        
     },[]);
 
     const updateCurrentChat = useCallback((chat) => {
         setCurrentChat(chat)
-    },[])
+    },[]);
 
     //creat new chat for main user
     const createChat = useCallback(async(firstId,secondId)=>{
@@ -206,7 +231,7 @@ export const ChatContextProvider = ({children,user}) => {
         setNotifications(mNotifications);
     },[]);
 
-    const markNotificationsAsRead = useCallback((n,userChats,user,notification) => {
+    const markNotificationsAsRead = useCallback((n,userChats,user,notifications) => {
         // find chat to open
         const desiredChat = userChats.find(chat => {
             const chatMembers = [user._id,n.senderId];
@@ -250,6 +275,40 @@ export const ChatContextProvider = ({children,user}) => {
         setNotifications(mNotifications);
     },[]);
 
+
+    const handleFileChange = async(targetFile) =>{
+        console.log("targetFile",typeof targetFile);
+
+        for (const file of Object.values(targetFile)) {
+            console.log("file",file)
+
+            if(!file.type.startsWith("image/")){
+                toast.error("Please select an image file");
+                return;
+            }
+
+            try {
+                const dataURL = await new Promise((resolve, reject)=>{
+                    const reader = new FileReader();
+
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+
+                    reader.readAsDataURL(file);
+                });
+
+                setSendImage(prev => [...prev, dataURL]);
+            
+            } catch (error) {
+                console.error("Failed to read file", error);
+            }
+        };
+    };
+
+    useEffect(() => {
+        console.log("sendImages updated", sendImages);
+    }, [sendImages]);
+
     return (
     <ChatContext.Provider value = {{
         userChats,
@@ -268,7 +327,8 @@ export const ChatContextProvider = ({children,user}) => {
         allUsers,
         markAllNotificationsAsRead,
         markNotificationsAsRead,
-        markThisUserNotificationsAsRead
+        markThisUserNotificationsAsRead,
+        handleFileChange
     }}>
         {children}
     </ChatContext.Provider>

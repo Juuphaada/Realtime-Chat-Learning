@@ -39,7 +39,7 @@ socket.on("sendMessage",(message)=>{
   }
 });
 
-  socket.on("disconnect",()=>{
+socket.on("disconnect",()=>{
     onlineUsers = onlineUsers.filter((user)=>user.socketId !== socket.id);
     io.emit("getOnlineUsers", onlineUsers);
   });

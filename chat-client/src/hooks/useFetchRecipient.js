@@ -1,3 +1,4 @@
+//to get user's data from other member in chat that currently active
 import { useEffect,useState } from "react";
 import { baseUrl,getRequest } from "../utils/services";
 

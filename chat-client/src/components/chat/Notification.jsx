@@ -21,9 +21,6 @@ const Notification = () => {
         }
     });
 
-    console.log("unreadNoti",unreadNotifications);
-    console.log("modiNoti",modifiedNotifications);
-
     return ( <div className="notifications">
         <div className="notification-icon" onClick={()=> setIsOpen(!isOpen)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chat-left-text-fill" viewBox="0 0 16 16">

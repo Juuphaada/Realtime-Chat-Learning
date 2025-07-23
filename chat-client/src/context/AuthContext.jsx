@@ -36,9 +36,6 @@ export const AuthContextProvider = ({ children }) => {
         password:"",
     });
 
-    console.log("User", user);
-    console.log("loginInfo",loginInfo);
-
     //whenever we refeash browser, there still user's state(still log in as that user)
     useEffect(()=>{
         const user = localStorage.getItem("User"); // get this registed user from local storage

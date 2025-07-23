@@ -33,12 +33,12 @@ const NavBar = () => {
                 <Stack direction="horizontal" gap={3}>
                     {/*if user state exist show only 'logout' button*/}
                     {user && (
-                    <>
-                    <Notification/>
-                        <Link onClick={()=> logoutUser()} to="/login"className="link-light text-decoration-none">
-                        Logout
-                        </Link>
-                    </>
+                        <>
+                            <Notification/>
+                            <Link onClick={()=> logoutUser()} to="/login"className="link-light text-decoration-none">
+                                Logout
+                            </Link>
+                        </>
                     )}
 
                     {/*if user state don't exist show only 'login' and 'register' button*/}
