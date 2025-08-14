@@ -1,4 +1,4 @@
-import { createContext , useState,useEffect} from "react";
+import { createContext , useState,useEffect,useRef} from "react";
 import { baseUrl,getRequest,postRequest } from "../utils/services";
 import { useCallback } from "react";
 import { io } from "socket.io-client";
@@ -22,7 +22,10 @@ export const ChatContextProvider = ({children,user}) => {
     const [onlineUsers,setOnlineUsers] = useState([]);
     const [notifications,setNotifications] = useState([]);
     const [allUsers, setAllUsers] = useState([]); // smiler to potential chat but not filter
-    const [sendImages,setSendImage] = useState([]);
+    const [images,setImages] = useState([]);
+    const sendingImagesRef = useRef(false); // lock
+    const imageQueueRef = useRef([]); // persistent queue
+
 
     // connect client to socket server
     useEffect(()=>{
@@ -161,10 +164,10 @@ export const ChatContextProvider = ({children,user}) => {
     },[currentChat]);
 
     const sendTextMessage = useCallback(async(textMessage,sender,currentChatId, setTextMessage) => {
-        if(!textMessage && !sendImages) return console.log("You must type something or upload some Image")  
+        if(!textMessage && imageQueueRef.current.length === 0) return console.log("You must type something or upload some Image");
 
         if(textMessage){
-            let response = postRequest(
+            let response = await postRequest(
                 `${baseUrl}/messages`,
                 JSON.stringify({
                 chatId: currentChatId,
@@ -180,31 +183,10 @@ export const ChatContextProvider = ({children,user}) => {
             setNewMessage(response); 
             setMessages((prev)=>[...prev,response]);
             setTextMessage("");
-            
+            console.log("new text message",response.senderId);
         }
 
-        if(sendImages.length !== 0){
-            for(const sendImage of sendImages.length){
-            let response = postRequest(
-                `${baseUrl}/messages`,
-                    JSON.stringify({
-                    chatId: currentChatId,
-                    senderId: sender._id,
-                    image: sendImage,
-                })
-            )
-                
-            if(response?.error){
-                return setSendTextMessageError(response);
-            }
-
-            //use this new message tell socket server that we have new message and update recipient
-            setNewMessage(response); 
-            setMessages((prev)=>[...prev,response]);
-            }
-
-            setSendImage(null);
-        }
+        processImageQueue(sender,currentChatId);
         
     },[]);
 
@@ -278,6 +260,7 @@ export const ChatContextProvider = ({children,user}) => {
 
     const handleFileChange = async(targetFile) =>{
         console.log("targetFile",typeof targetFile);
+        const newImages = [];
 
         for (const file of Object.values(targetFile)) {
             console.log("file",file)
@@ -297,17 +280,60 @@ export const ChatContextProvider = ({children,user}) => {
                     reader.readAsDataURL(file);
                 });
 
-                setSendImage(prev => [...prev, dataURL]);
+                //setImages(prev => [...prev, dataURL]);
+                newImages.push(dataURL);
             
             } catch (error) {
                 console.error("Failed to read file", error);
             }
         };
+
+        imageQueueRef.current.push(...newImages);
+        setImages((prev) => [...prev, ...newImages]);
     };
 
     useEffect(() => {
-        console.log("sendImages updated", sendImages);
-    }, [sendImages]);
+        console.log("images updated", images);
+    }, [images]);
+
+    const processImageQueue = async (sender,currentChatId) => {
+        if (sendingImagesRef.current) return; // already sending
+
+        sendingImagesRef.current = true;
+
+        while (imageQueueRef.current.length > 0) {
+            const image = imageQueueRef.current.shift(); // get next
+            try {
+                let response = await postRequest(
+                    `${baseUrl}/messages`,
+                    JSON.stringify({
+                        chatId: currentChatId,
+                        senderId: sender._id,
+                        image: image,
+                    })
+                );
+
+                console.log("Sent image:", image);
+
+                if (response?.error) {
+                    setSendTextMessageError(response);
+                    break; // exit loop on error
+                }
+
+                setNewMessage(response);
+                setMessages((prev) => [...prev, response]);
+                console.log("new image message",response.senderId);
+            } catch (err) {
+                console.error("Error sending image:", err);
+                break;
+            }
+
+            console.log("image", typeof image)
+        }
+
+        sendingImagesRef.current = false;
+    };
+
 
     return (
     <ChatContext.Provider value = {{
@@ -328,7 +354,9 @@ export const ChatContextProvider = ({children,user}) => {
         markAllNotificationsAsRead,
         markNotificationsAsRead,
         markThisUserNotificationsAsRead,
-        handleFileChange
+        handleFileChange,
+        images,
+        setImages
     }}>
         {children}
     </ChatContext.Provider>
