@@ -214,3 +214,8 @@ body{
   align-items: center;
   justify-content: center;
 }
+
+.custom-image-message {
+  max-height: 200px; /* Or any desired maximum height */
+  max-width: 300px; /* Important for maintaining aspect ratio with max-height */
+}

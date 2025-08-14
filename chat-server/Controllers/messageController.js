@@ -15,8 +15,9 @@ const createMessage = async(req,res) => {
         }
     }
 
+    console.log("imageURL", typeof imageURL);
     const message = new messageModel({
-        chatId,senderId,text,imageURL
+        chatId,senderId,text,image:imageURL
     })
 
     try{
