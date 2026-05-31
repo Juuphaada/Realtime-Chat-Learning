@@ -54,14 +54,17 @@ User Experience:
 
 ## Execute the project
 1. Open "chat-server" folder in terminal and run the server.
-''' cd chat-server
-''' node index.js 
+   ```bash
+    cd chat-server
+    node index.js 
 2. Open "chat-client" folder in terminal and run the client's site.
-''' cd chat-client
-''' npm run dev
+    ```bash
+    cd chat-client
+    npm run dev
 3. Open "socket" folder in terminal and run the soceket server.
-''' cd socket
-''' nodemon
+    ```bash
+    cd socket
+    nodemon
 
 ## Usage
 - At the register page (http://localhost:xxxx/register), fill out the registration form and submit it.
@@ -72,4 +75,5 @@ User Experience:
 - To send an image, click the image icon to upload an image, then click the send icon.
 - when there're new message from other user, there are notification marking on the icon of the top-right of the page, click the icon to see details and select at message to open the chat box that new message is form.
 - Loging out by click at the logout link at the top-right of the page.
+
 
