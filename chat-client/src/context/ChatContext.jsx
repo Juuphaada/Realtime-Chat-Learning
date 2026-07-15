@@ -22,7 +22,7 @@ export const ChatContextProvider = ({children,user}) => {
     const [onlineUsers,setOnlineUsers] = useState([]);
     const [notifications,setNotifications] = useState([]);
     const [allUsers, setAllUsers] = useState([]); // smiler to potential chat but not filter
-    const [images,setImages] = useState([]);
+    const [imagesPreview,setImagesPreview] = useState([]);
     const sendingImagesRef = useRef(false); // lock
     const imageQueueRef = useRef([]); // persistent queue
 
@@ -289,12 +289,12 @@ export const ChatContextProvider = ({children,user}) => {
         };
 
         imageQueueRef.current.push(...newImages);
-        setImages((prev) => [...prev, ...newImages]);
+        setImagesPreview((prev) => [...prev, ...newImages]);
     };
 
     useEffect(() => {
-        console.log("images updated", images);
-    }, [images]);
+        console.log("images updated", imagesPreview);
+    }, [imagesPreview]);
 
     const processImageQueue = async (sender,currentChatId) => {
         if (sendingImagesRef.current) return; // already sending
@@ -313,8 +313,6 @@ export const ChatContextProvider = ({children,user}) => {
                     })
                 );
 
-                console.log("Sent image:", image);
-
                 if (response?.error) {
                     setSendTextMessageError(response);
                     break; // exit loop on error
@@ -328,11 +326,23 @@ export const ChatContextProvider = ({children,user}) => {
                 break;
             }
 
-            console.log("image", typeof image)
+            //reset images preview
+            setImagesPreview([]);
         }
+
 
         sendingImagesRef.current = false;
     };
+
+    const deleteImage = (index) => {
+        // delete from queue
+        imageQueueRef.current.splice(index,1);
+
+        //delete from preview
+        setImagesPreview(prev =>
+            prev.filter((_, i) => i !== index)
+        );
+    }
 
 
     return (
@@ -355,8 +365,10 @@ export const ChatContextProvider = ({children,user}) => {
         markNotificationsAsRead,
         markThisUserNotificationsAsRead,
         handleFileChange,
-        images,
-        setImages
+        imagesPreview,
+        setImagesPreview,
+        imageQueueRef,
+        deleteImage
     }}>
         {children}
     </ChatContext.Provider>

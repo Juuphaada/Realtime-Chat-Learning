@@ -15,13 +15,15 @@ const Chat = () => {
 
     return (
         <Container>
+            <p className="text-light font-weight-bold">Other user you may like to chat :</p> 
             <PotentialChats/>
 
             {/*check if have any chat*/}
             {/*if true (no any chat) then not display anything*/}
             {/*if flase (there are chats) display stack component*/}
-
-            {userChats?.length < 1 ? null : (
+            {userChats?.length < 1 ? 
+                <p>let's get some friends</p>
+            : (
                 <Stack direction="horizontal" gap={4} className="align-items-start">
 
                     {/*list of chats*/}
@@ -42,6 +44,7 @@ const Chat = () => {
             
                 </Stack>
             )}
+
         </Container>
     );
 };

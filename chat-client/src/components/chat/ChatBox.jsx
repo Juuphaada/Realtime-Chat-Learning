@@ -8,7 +8,14 @@ import InputEmoji from "react-input-emoji";
 
 const ChatBox = () => {
     const {user} = useContext(AuthContext);
-    const {currentChat, messages,isMessagesLoading,sendTextMessage,handleFileChange} = useContext(ChatContext);
+    const {currentChat, 
+        messages,
+        isMessagesLoading,
+        sendTextMessage,
+        handleFileChange,
+        imageQueueRef,
+        deleteImage,
+        imagesPreview} = useContext(ChatContext);
     const {recipientUser} = useFetchRecipientUser(currentChat,user);
     const [textMessage, setTextMessage] = useState("");
     const scroll = useRef();
@@ -59,21 +66,77 @@ const ChatBox = () => {
 
                     )}
                     {message.image && (
-                        <img
-                        src={message.image}
-                        alt="Attachment"
-                        className={`${message?.senderId === user?._id 
-                            ? "custom-image-message align-self-end flex-grow-0"
-                            : "custom-image-message align-self-start flex-grow-0"}`}
-                        
-                        ref = {scroll}
-                        //className="sm:max-w-[200px] rounded-md mb-2"
-                        />
+                        <div className={`${message?.senderId === user?._id 
+                                ? "align-self-end flex-grow-0"
+                                : "align-self-start flex-grow-0"}`}
+                        >
+                            <img
+                            src={message.image}
+                            alt="Attachment"
+                            className={`${message?.senderId === user?._id 
+                                ? "custom-image-message"
+                                : "custom-image-message"}`}
+                            
+                            ref = {scroll}
+                            //className="sm:max-w-[200px] rounded-md mb-2"
+                            />
+
+                            <p className="align-self-end flex-grow-1" style={{fontSize: 12}}>
+                                {moment(message.createdAt).calendar()}
+                            </p>
+                            
+                        </div>
                     )}
                 </>
             ))}
             
         </Stack>
+
+        {imagesPreview.length === 0 ? null :(
+            <div
+                style={{
+                    maxHeight: "250px",
+                    minHeight: "150px",
+                    overflowY: "auto",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                    gap: "12px",
+                    padding: "8px",
+                }}
+            >
+                {imagesPreview.map((img, index) => (
+                    <div
+                        key={index}
+                        style={{
+                            position: "relative",
+                        }}
+                    >
+                        <button
+                            onClick={() => deleteImage(index)}
+                            style={{
+                                position: "absolute",
+                                top: 5,
+                                right: 5,
+                                zIndex: 1,
+                            }}
+                        >
+                            ✕
+                        </button>
+
+                        <img
+                            src={img}
+                            alt={`preview-${index}`}
+                            style={{
+                                width: "100%",
+                                height: "120px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                            }}
+                        />
+                    </div>
+                ))}
+            </div>
+        )}
 
         <Stack direction="horizontal" gap={3} className="chat-input flex-grow-0">
             <InputEmoji value={textMessage} onChange={setTextMessage} fontFamily="nunito" borderColor="rgba(72,112,223,0.2)"/>
