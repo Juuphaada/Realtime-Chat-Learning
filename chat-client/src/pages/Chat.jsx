@@ -16,6 +16,7 @@ const Chat = () => {
     return (
         <Container>
             <p className="text-light font-weight-bold">Other user you may like to chat :</p> 
+
             <PotentialChats/>
 
             {/*check if have any chat*/}
@@ -41,10 +42,10 @@ const Chat = () => {
 
                     {/*display chat Box*/}
                     <ChatBox/>
-            
+                
                 </Stack>
             )}
-
+            
         </Container>
     );
 };

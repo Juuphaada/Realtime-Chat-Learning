@@ -1,3 +1,6 @@
+#side bar
+src\components\chat\SideBar.jsx
+
 # Logs
 logs
 *.log
