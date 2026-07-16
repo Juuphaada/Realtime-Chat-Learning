@@ -15,7 +15,8 @@ const ChatBox = () => {
         handleFileChange,
         imageQueueRef,
         deleteImage,
-        imagesPreview} = useContext(ChatContext);
+        imagesPreview,
+        sendingImages} = useContext(ChatContext);
     const {recipientUser} = useFetchRecipientUser(currentChat,user);
     const [textMessage, setTextMessage] = useState("");
     const scroll = useRef();
@@ -112,6 +113,7 @@ const ChatBox = () => {
                         }}
                     >
                         <button
+                            disabled = {sendingImages}
                             onClick={() => deleteImage(index)}
                             style={{
                                 position: "absolute",

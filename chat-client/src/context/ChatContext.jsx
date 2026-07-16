@@ -23,7 +23,8 @@ export const ChatContextProvider = ({children,user}) => {
     const [notifications,setNotifications] = useState([]);
     const [allUsers, setAllUsers] = useState([]); // smiler to potential chat but not filter
     const [imagesPreview,setImagesPreview] = useState([]);
-    const sendingImagesRef = useRef(false); // lock
+  //const sendingImagesRef = useRef(false); // lock
+    const [sendingImages,setSendingImages] = useState(false);
     const imageQueueRef = useRef([]); // persistent queue
 
 
@@ -297,9 +298,12 @@ export const ChatContextProvider = ({children,user}) => {
     }, [imagesPreview]);
 
     const processImageQueue = async (sender,currentChatId) => {
-        if (sendingImagesRef.current) return; // already sending
+     // if (sendingImagesRef.current) return;
 
-        sendingImagesRef.current = true;
+     // sendingImagesRef.current = true;
+
+        if (sendingImages) return;
+        setSendingImages(true);
 
         while (imageQueueRef.current.length > 0) {
             const image = imageQueueRef.current.shift(); // get next
@@ -330,8 +334,8 @@ export const ChatContextProvider = ({children,user}) => {
             setImagesPreview([]);
         }
 
-
-        sendingImagesRef.current = false;
+      //sendingImagesRef.current = false;
+      setSendingImages(false);
     };
 
     const deleteImage = (index) => {
@@ -368,7 +372,8 @@ export const ChatContextProvider = ({children,user}) => {
         imagesPreview,
         setImagesPreview,
         imageQueueRef,
-        deleteImage
+        deleteImage,
+        sendingImages
     }}>
         {children}
     </ChatContext.Provider>

@@ -31,11 +31,12 @@ body{
   color: white;
   position: relative;
   border-bottom: 1px solid rgb(100, 100, 100);
-  width: 380px;
 }
 
 .user-card .text-content {
-  width: 170px;
+  max-width: auto;
+  min-width: 100px;
+  flex:1;
 }
 
 .user-card .name {
@@ -66,10 +67,13 @@ body{
   overflow-y: auto;
   background: rgb(25, 25, 25);
   border-radius: 10px;
+  flex:1 0 600px;
+
 }
 
 .messages-box {
   height: 85vh;
+  flex:0 1 400px;
 }
 
 /* Chat Header */
