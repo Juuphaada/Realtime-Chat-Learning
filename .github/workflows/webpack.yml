@@ -1,28 +1,67 @@
-name: NodeJS with Webpack
+name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
-  build:
+
+  frontend:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
+    defaults:
+      run:
+        working-directory: ./chat-client
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-client/package-lock.json
 
-    - name: Build
-      run: |
-        npm install
-        npx webpack
+      - run: npm ci
+
+      - run: npm run build
+
+
+  chat-server:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-server/package-lock.json
+
+      - run: npm ci
+
+
+  socket:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./socket
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./socket/package-lock.json
+
+      - run: npm ci
