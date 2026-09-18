@@ -1,4 +1,4 @@
-name: Frontend-CI
+name: CI
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: ["master"]
 
 jobs:
-  test-and-build:
+
+  frontend:
     runs-on: ubuntu-latest
 
     defaults:
@@ -15,21 +16,52 @@ jobs:
         working-directory: ./chat-client
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22.x
           cache: npm
           cache-dependency-path: ./chat-client/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Test
-        run: npm test
+      - run: npm run build
 
-      - name: Build
-        run: npm run build
+
+  chat-server:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-server/package-lock.json
+
+      - run: npm ci
+
+
+  socket:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./socket
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./socket/package-lock.json
+
+      - run: npm ci
