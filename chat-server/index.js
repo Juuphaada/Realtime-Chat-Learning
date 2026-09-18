@@ -29,10 +29,10 @@ app.get("/", (req , res) => {
   res.send("welcome");
 });
 
-const port = process.env.PORT || 5000; //set port automatic if 5000 unavalible
+const port = process.env.PORT || 5000; //set port automatic , if 5000 unavalible it will chang automatically,  [process.env] reading environment variable from .env flie
 const uri = process.env.ATLAS_URI;//connect mongoo, read enviroment variable from .env file
 
-app.listen(port, "0.0.0.0",(req,res) => {
+app.listen(port, (req,res) => {
   console.log(`Server running on port: ${port}`)
 });
 
