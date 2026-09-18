@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 
-const io = new Server({cors:"http://localhost:5173"}); // localhost:5173 is client side address
+const io = new Server({cors: process.env.CLIENT_URL || "http://localhost:8080" }); // localhost:5173 is client side address
 
 let onlineUsers = [];
 
@@ -45,4 +45,8 @@ socket.on("disconnect",()=>{
   });
 });
 
-io.listen(3000);// this port need to be diffrent form client and server port
+const PORT = process.env.PORT || 3000;
+
+io.listen(PORT);
+
+console.log(`Socket server running on port ${PORT}`);
