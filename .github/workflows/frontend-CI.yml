@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-client/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+
+  chat-server:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-server/package-lock.json
+
+      - run: npm ci
+
+
+  socket:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./socket
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./socket/package-lock.json
+
+      - run: npm ci
