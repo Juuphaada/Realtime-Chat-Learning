@@ -2,7 +2,7 @@ name: Frontend CD
 
 on:
   push:
-    branches: ["Test-CI/CD"]
+    branches: ["Testing-CI/CD"]
     
 jobs:
   build-and-push:
