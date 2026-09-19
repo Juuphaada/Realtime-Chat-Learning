@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: ["Client-CI"]
     types: [completed]
-    branches: ["master"]
+    branches: ["Testing-CI/CD"]
 
 jobs:
   build-and-push:
