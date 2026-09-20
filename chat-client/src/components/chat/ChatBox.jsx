@@ -150,7 +150,7 @@ const ChatBox = () => {
             </button>
 
             <input id="file-upload" type="file" className= "d-none" ref={imageInputRef} onChange={(e)=>handleFileChange(e.target.files)} 
-            multiple accept="image/*,.pdf"/>
+            multiple accept="image/*"/>
             
             <button className="send-btn" onClick={()=>sendTextMessage(textMessage,user,currentChat._id,setTextMessage)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
