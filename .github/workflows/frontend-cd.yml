@@ -3,8 +3,7 @@ name: Frontend-CD
 on:
   workflow_run:
     workflows: ["Frontend-CI"]
-    types: 
-      - completed 
+    types: [completed] 
     branches: ["test-cicd-vitest"]
     
 jobs:
