@@ -1,8 +1,8 @@
-name: frontend-ci
+name: Frontend-CI
 
 on:
   push:
-    branches: ["test-cicd-vitest"]
+    branches: [test-cicd-vitest]
 
 jobs:
 
