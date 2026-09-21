@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: ["test-cicd-vitest"]
+
+jobs:
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: ./chat-client/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run build
