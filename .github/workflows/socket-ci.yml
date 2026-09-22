@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./Socket
+        working-directory: ./socket
 
     steps:
       - uses: actions/checkout@v4
@@ -24,11 +24,9 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-          cache-dependency-path: ./Socket/package-lock.json
+          cache-dependency-path: ./socket/package-lock.json
 
       - run: npm ci
-      
-      - run: npm run build
 
   cd:
     needs: socket-ci

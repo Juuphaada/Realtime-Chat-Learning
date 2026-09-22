@@ -27,8 +27,6 @@ jobs:
           cache-dependency-path: ./chat-server/package-lock.json
 
       - run: npm ci
-      
-      - run: npm run build
 
   cd:
     needs: backend-ci
