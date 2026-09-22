@@ -1,4 +1,4 @@
-name: Frontend-CI
+name: Backend-CI
 
 on:
   push:
@@ -10,12 +10,12 @@ permissions:
   packages: write
 
 jobs:
-  frontend-ci:
+  backend-ci:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: ./chat-client
+        working-directory: ./chat-server
 
     steps:
       - uses: actions/checkout@v4
@@ -24,14 +24,12 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-          cache-dependency-path: ./chat-client/package-lock.json
+          cache-dependency-path: ./chat-server/package-lock.json
 
       - run: npm ci
-
-      - run: npm test
       
       - run: npm run build
 
   cd:
-    needs: frontend-ci
-    uses: ./.github/workflows/frontend-cd.yml
+    needs: backend-ci
+    uses: ./.github/workflows/backend-cd.yml

@@ -1,4 +1,4 @@
-name: Frontend-CD
+name: Socket-CD
 
 on:
   workflow_call:
@@ -22,16 +22,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Convert repo owner name to lowercase
-        run: echo "owner_name_lc=${{github.repository_owner}}" | tr '[:upper:]' '[:lower:]'
-
       - name: Build Docker image
         run: |
           docker build \
-            -t ghcr.io/${{ owner_name_lc }}/realtime-chat-client:latest \
+            -t ghcr.io/juuphaada/realtime-chat-socket:latest \
             ./chat-client
 
       - name: Push Docker image
         run: |
           docker push \
-            ghcr.io/${ owner_name_lc }/realtime-chat-client:latest
+            ghcr.io/juuphaada/realtime-chat-socket:latest
