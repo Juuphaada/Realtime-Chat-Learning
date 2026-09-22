@@ -22,13 +22,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Convert repo owner name to lowercase
+        run: echo "owner_name_lc=${{github.repository_owner}}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
+
       - name: Build Docker image
         run: |
           docker build \
-            -t ghcr.io/juuphaada/realtime-chat-socket:latest \
+            -t ghcr.io/${{ env.owner_name_lc }}/realtime-chat-socket:latest \
             ./chat-client
 
       - name: Push Docker image
         run: |
           docker push \
-            ghcr.io/juuphaada/realtime-chat-socket:latest
+            ghcr.io/${{ env.owner_name_lc }}/realtime-chat-socket:latest

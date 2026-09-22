@@ -34,4 +34,4 @@ jobs:
       - name: Push Docker image
         run: |
           docker push \
-            ghcr.io/${{ owner_name_lc }}/realtime-chat-client:latest
+            ghcr.io/${{ env.owner_name_lc }}/realtime-chat-client:latest
