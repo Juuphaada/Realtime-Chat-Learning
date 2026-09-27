@@ -25,7 +25,8 @@
     "rate-limit-redis": "^6.0.1",
     "rate-limiter-flexible": "^11.2.1",
     "socket.io": "^4.8.3",
-    "validator": "^13.15.35"
+    "validator": "^13.15.35",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "vitest": "^5.0.1"
