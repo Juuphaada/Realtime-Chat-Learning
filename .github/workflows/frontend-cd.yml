@@ -11,6 +11,10 @@ jobs:
       contents: read
       packages: write
 
+    env:
+      VITE_SERVER_URL: ${{ vars.VITE_SERVER_URL }}
+      VITE_SOCKET_URL: ${{ vars.VITE_SOCKET_URL }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,6 +32,8 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            --build-arg VITE_SERVER_URL="$VITE_SERVER_URL" \
+            --build-arg VITE_SOCKET_URL="$VITE_SOCKET_URL" \
             -t ghcr.io/${{ env.owner_name_lc }}/realtime-chat-client:latest \
             ./chat-client
 
