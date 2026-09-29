@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { Server } = require("socket.io");
 
 const io = new Server({cors: process.env.CLIENT_URL || "http://localhost:8080" }); // localhost:5173 is client side address
@@ -45,7 +46,7 @@ socket.on("disconnect",()=>{
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.SOCKET_PORT || 3000;
 
 io.listen(PORT);
 

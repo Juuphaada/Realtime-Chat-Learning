@@ -1,0 +1,39 @@
+name: Backend-CI
+
+on:
+  push:
+    branches:
+      - test-cicd-docker
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./chat-server
+
+    strategy:
+      matrix:
+        node-version: [22.x, 24.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: ./chat-server/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+  backend-cd:
+    needs: backend-ci
+    uses: ./.github/workflows/backend-cd.yml
