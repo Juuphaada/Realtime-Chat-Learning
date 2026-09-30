@@ -1,4 +1,4 @@
-export const baseUrl = "http://localhost:5000/api"
+export const baseUrl = import.meta.env.VITE_SERVER_URL
 // base url for backend API. wherever you want to change it when deploy apprication it can easily do so.
 
 // a funtion which help us to perform the post request

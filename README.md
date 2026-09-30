@@ -1,5 +1,8 @@
 A real-time chat application that user can send messages to other users, receive messages and notify the new message. This project was developed to learn and practice JavaScript, node.js and React.js for developing web application. Thank to Chaoo Charles, The project was inspired by and developed with guidance from a tutorial. furthermore, I would add more feature to make this application more comprehensive.
 
+## Demo Site
+[Real-time Chat Application](https://realtime-chat-client-latest.onrender.com)
+
 ## Features
 - User registration
 - User login
@@ -44,12 +47,6 @@ Real-time Communication:
 
 APIs Protection
 - Express-rate-limit
-
-Date & Time:
-- Moment.js
-
-User Experience:
-- React Input Emoji
 
 ## Tools
 - Git

@@ -9,8 +9,16 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build
+ARG VITE_SERVER_URL
+ARG VITE_SOCKET_URL
 
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
+ENV VITE_SOCKET_URL=$VITE_SOCKET_URL
+
+RUN test -n "$VITE_SERVER_URL" || (echo "VITE_SERVER_URL is missing" && exit 1)
+RUN test -n "$VITE_SOCKET_URL" || (echo "VITE_SOCKET_URL is missing" && exit 1)
+
+RUN npm run build
 
 # Production stage
 FROM nginx:alpine
