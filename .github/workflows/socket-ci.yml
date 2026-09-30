@@ -3,7 +3,7 @@ name: Socket-CI
 on:
   push:
     branches:
-      - test-cicd-docker
+      - master
 
 permissions:
   contents: read
