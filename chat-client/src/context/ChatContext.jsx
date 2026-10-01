@@ -26,6 +26,7 @@ export const ChatContextProvider = ({children,user}) => {
   //const sendingImagesRef = useRef(false); // lock
     const [sendingImages,setSendingImages] = useState(false);
     const imageQueueRef = useRef([]); // persistent queue
+    const [isMessageSending,setIsMessageSending] = useState(false);
 
 
     // connect client to socket server
@@ -165,7 +166,10 @@ export const ChatContextProvider = ({children,user}) => {
     },[currentChat]);
 
     const sendTextMessage = useCallback(async(textMessage,sender,currentChatId, setTextMessage) => {
+
         if(!textMessage && imageQueueRef.current.length === 0) return console.log("You must type something or upload some Image");
+        
+        setIsMessageSending(true);
 
         if(textMessage){
             let response = await postRequest(
@@ -184,11 +188,11 @@ export const ChatContextProvider = ({children,user}) => {
             setNewMessage(response); 
             setMessages((prev)=>[...prev,response]);
             setTextMessage("");
-            console.log("new text message",response.senderId);
+            setIsMessageSending(false);
         }
-
-        processImageQueue(sender,currentChatId);
         
+        await processImageQueue(sender,currentChatId);
+
     },[]);
 
     const updateCurrentChat = useCallback((chat) => {
@@ -298,11 +302,9 @@ export const ChatContextProvider = ({children,user}) => {
     }, [imagesPreview]);
 
     const processImageQueue = async (sender,currentChatId) => {
-     // if (sendingImagesRef.current) return;
-
-     // sendingImagesRef.current = true;
 
         if (sendingImages) return;
+
         setSendingImages(true);
 
         while (imageQueueRef.current.length > 0) {
@@ -373,7 +375,8 @@ export const ChatContextProvider = ({children,user}) => {
         setImagesPreview,
         imageQueueRef,
         deleteImage,
-        sendingImages
+        sendingImages,
+        isMessageSending
     }}>
         {children}
     </ChatContext.Provider>
