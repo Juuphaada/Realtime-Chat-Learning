@@ -19,6 +19,7 @@ class mockUserModel{
             createdUser = this;
         }
         static findOne = vi.fn();
+        static countDocuments = vi.fn(()=>10);
     }
 
 const mongoose = require("mongoose");

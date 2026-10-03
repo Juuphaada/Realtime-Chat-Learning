@@ -17,14 +17,18 @@ const createToken = (_id) =>{
 const registerUser = async (req,res)=>{
     
     try{
+        const totalUsers = await userModel.countDocuments({}); // check users number in DB
+
+        if(totalUsers >= process.env.USER_LIMIT){
+            return res.status(400).json("Sorry, user amount reach the defined limit");
+        }
+
         //res.send("Register");
         const {name,email,password} = req.body;
         
         const normalizedEmail = email && email.trim().toLowerCase(); // convert email to lowercase
         const trimedName = name && name.trim().replace(/\s+/g, ' ') 
         // remove whitespace at the start and the end of name and reduce whitespace between name.
-
-        console.log("trimName",trimedName)
 
         let user = await userModel.findOne({email : normalizedEmail}); // return true if regising user alredy exise
 
@@ -50,7 +54,6 @@ const registerUser = async (req,res)=>{
             return res.status(400).json("Password length mushn't longer than 40 characters");
 
         user = new userModel({name: trimedName,  email: normalizedEmail, password: password});//add the new user
-
         const salt = await bcrypt.genSalt(10);// random String length to hash a password
         user.password = await bcrypt.hash(user.password, salt);// hash a password and change password in to the hashed one
         await user.save();//save the new user into the database
