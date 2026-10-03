@@ -15,41 +15,49 @@ const createToken = (_id) =>{
 //#1
 // check if user alredy exist in the database
 const registerUser = async (req,res)=>{
-    //console.log("registerInfo", {name : req.name, email : req.email, pass: req.password});
+    
     try{
         //res.send("Register");
         const {name,email,password} = req.body;
-
-        console.log("registerInfo", {name : name, email : email, pass: password})
         
-        //#1
-        //find user
-        // when using"await", type "async" before "registerUser" funtion
-        let user = await userModel.findOne({email}); // return true if regising user alredy exise
+        const normalizedEmail = email && email.trim().toLowerCase(); // convert email to lowercase
+        const trimedName = name && name.trim().replace(/\s+/g, ' ') 
+        // remove whitespace at the start and the end of name and reduce whitespace between name.
 
-        // if there alredy user on database resporn with error message 400
+        console.log("trimName",trimedName)
+
+        let user = await userModel.findOne({email : normalizedEmail}); // return true if regising user alredy exise
+
         if(user) 
             return res.status(400).json("User with the given email already exist..");
+
         // if user does not enter all field
-        if(!name || !email || !password) 
+        if(!trimedName || !normalizedEmail || !password) 
             return res.status(400).json("All fields are required");
+
+        if(trimedName.length > 20) 
+            return res.status(400).json("Username mushn't longer than 20 characters");
+
         // if worng email format
-        if(!validator.isEmail(email)) 
+        if(!validator.isEmail(normalizedEmail))
             return res.status(400).json("Email must be valid email...");
+
         // if password isnt strong enouge
         if(!validator.isStrongPassword(password)) 
             return res.status(400).json("Password must be a strong password...");
-        
-        //#1
-        user = new userModel({name, email, password});//add new user in database
+
+        if(password.length > 40) 
+            return res.status(400).json("Password length mushn't longer than 40 characters");
+
+        user = new userModel({name: trimedName,  email: normalizedEmail, password: password});//add the new user
 
         const salt = await bcrypt.genSalt(10);// random String length to hash a password
         user.password = await bcrypt.hash(user.password, salt);// hash a password and change password in to the hashed one
-        await user.save();
+        await user.save();//save the new user into the database
 
         const token = createToken(user._id)
         //resporn user._id, name,email, token , do not send password, It must be secret
-        res.status(200).json({_id: user._id, name,email, token})
+        res.status(200).json({_id: user._id, name: trimedName, email: normalizedEmail, token: token})
 
     }catch(error){
         console.log(error);
@@ -63,6 +71,8 @@ const loginUser = async(req, res) =>{
     const {email,password} = req.body;
 
     try{
+        if(!email||!password) return res.status(400).json("All fields are required")
+
         let user = await userModel.findOne({email}); //.findOne, passing an object which is {email}
         
         if(!user) return res.status(400).json("Invalid email or password...")//if this email doesnt exise

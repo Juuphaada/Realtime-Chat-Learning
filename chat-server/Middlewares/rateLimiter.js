@@ -35,7 +35,7 @@ const createLimiter = (maxReq) => {
     });
 };
 
-const userEndpointLimiter = createLimiter(10);
+const userEndpointLimiter = createLimiter(20);
 const chatEndpointLimiter = createLimiter(20);
 const messageEndpointLimiter = createLimiter(50);
 
