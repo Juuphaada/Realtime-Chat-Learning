@@ -1,5 +1,4 @@
 // Set up route
-
 import { Routes,Route,Navigate } from "react-router-dom";
 import Chat from "./pages/Chat";
 import Register from "./pages/Register";
@@ -10,6 +9,7 @@ import NavBar from "./components/NavBar";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { ChatContextProvider } from "./context/ChatContext";
+import 'react-photo-view/dist/react-photo-view.css';
 
 function App(){
   //get user data from AuthContext to here

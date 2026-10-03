@@ -1,4 +1,5 @@
-import { useContext,useState, useRef,useEffect} from "react";
+import {useContext,useState, useRef,useEffect} from "react";
+import React from "react";
 import {Component} from "react";
 import {Stack,Form} from "react-bootstrap";
 import { ChatContext } from "../../context/ChatContext";
@@ -7,6 +8,7 @@ import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import ChatInput from "./ChatInput";
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 const ChatBox = () => {
     const {user} = useContext(AuthContext);
@@ -48,52 +50,64 @@ const ChatBox = () => {
     );
 
     return (
+    
     <Stack gap={4} className="chat-box">
         <div className="chat-header">
             <strong>{recipientUser?.name}</strong>
         </div>
 
         <Stack gap={3} className="messages">
-            {messages && messages.map((message, index) => (
-                <>
-                    {message.text && (
-                            <Stack 
-                            key={index} 
-                            className={`${message?.senderId === user?._id 
-                            ? "message self align-self-end flex-grow-0"
-                            : "message align-self-start flex-grow-0"}`}
-                            ref = {scroll}
-                            > 
-                                <span>{message.text}</span>
-                                <span className="message-footer">{moment(message.createdAt).calendar()}</span>
-                            </Stack>
-
-                    )}
-                    {message.image && (
-                        <div className={`${message?.senderId === user?._id 
-                                ? "align-self-end flex-grow-0"
-                                : "align-self-start flex-grow-0"}`}
-                        >
-                            <img
-                            src={message.image}
-                            alt="Attachment"
-                            className={`${message?.senderId === user?._id 
-                                ? "custom-image-message"
-                                : "custom-image-message"}`}
-                            
-                            ref = {scroll}
-                            //className="sm:max-w-[200px] rounded-md mb-2"
-                            />
-
-                            <p className="align-self-end flex-grow-1" style={{fontSize: 12}}>
-                                {moment(message.createdAt).calendar()}
-                            </p>
-                            
-                        </div>
-                    )}
-                </>
-            ))}
+        
+        <PhotoProvider>
+        
+            {messages && 
             
+                messages.map((message, index) => (
+                    <React.Fragment key={message._id || index}>
+                        {message.text && (
+                                <Stack 
+                                key={index} 
+                                className={`${message?.senderId === user?._id 
+                                ? "message self align-self-end flex-grow-0"
+                                : "message align-self-start flex-grow-0"}`}
+                                ref = {scroll}
+                                > 
+                                    <span>{message.text}</span>
+                                    <span className="message-footer">{moment(message.createdAt).calendar()}</span>
+                                </Stack>
+
+                        )}
+                        {message.image && (
+                            <div className={`${message?.senderId === user?._id 
+                                    ? "align-self-end flex-grow-0"
+                                    : "align-self-start flex-grow-0"}`}
+                            >
+
+                                <PhotoView src={message.image}>
+                                    
+                                    <img
+                                        src={message.image}
+                                        alt="Attachment"
+                                        className={`${message?.senderId === user?._id 
+                                            ? "custom-image-message"
+                                            : "custom-image-message"}`}
+                                        
+                                        ref = {scroll}
+                                        //className="sm:max-w-[200px] rounded-md mb-2"
+                                    />
+                                </PhotoView>
+
+                                <p className="align-self-end flex-grow-1" style={{fontSize: 12}}>
+                                    {moment(message.createdAt).calendar()}
+                                </p>
+                                
+                            </div>
+                        )}
+                    </React.Fragment>
+                ))
+            }
+        </PhotoProvider>   
+
         </Stack>
 
         {imagesPreview.length === 0 ? null :(
